@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 int existenceEtOuverture(char *nom) {
     if (access(nom, F_OK) != 0) {
@@ -67,14 +69,22 @@ void lectureMessage(int file, int *infos) {
     printf(" \n");
 }
 
+void decryptage(){
+    int* tab[2];
+
+    if(pipe(tab)){
+
+    }
+}
+
 
 int main(int argc, char **argv) {
     int file;
-    if (argc == 2){
-        file = existenceEtOuverture(argv[1]);
-    } else {
-        exit(1);
-    }
+
+    if(argc != 2)
+        return -1;
+
+    file = existenceEtOuverture(argv[1]);
 
     verifCrypt(file);
     int *infos = afficheInformations(file);

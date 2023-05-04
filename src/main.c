@@ -4,6 +4,8 @@
 #include <fcntl.h>
 #include <wait.h>
 
+#define size 25
+
 int existenceEtOuverture(char *nom) {
     if (access(nom, F_OK) != 0) {
         printf("Le fichier n'existe pas \n");
@@ -61,46 +63,50 @@ void lectureMessage(int file, int *infos, int *ecriture) {
             printf("Erreur lors de la lecture du fichier \n");
             exit(1);
         } else {
-            for (int j = 0; j < 25; j++)
+            for (int j = 0; j < size; j++)
                 write(ecriture[j], &cara, sizeof(char));
         }
     }
-    for (int i = 0; i < 25; i++)
+    for (int i = 0; i < size; i++)
         close(ecriture[i]);
 }
 
 int *decryptage(char *nomFichier, char *mot) {
-    int tab[25][2];
-    int *tabRes = malloc(25 * sizeof(int));
+    int tab[size][2];
+    int *tabRes = malloc(size * sizeof(int));
+    char lecture[5];
 
     pid_t res;
 
-    for (int i = 1; i <= 25; ++i) {
+    for (int i = 1; i <= size; ++i) {
         if (pipe(tab[i - 1]) == -1) {
             printf("Erreur lors de la création du pipe \n");
             exit(1);
         }
 
         res = fork();
-        if (res == -1) {
-            printf("Erreur lors de la création du processus enfant \n");
-            exit(1);
-        } else if (res == 0) {
-            //printf("Le fils est créer. \n");
-            char lecture[5];
-            sprintf(lecture, "%d", tab[i - 1][0]);
+        switch (res) {
+            case -1:
+                printf("Erreur lors de la création du processus enfant \n");
+                exit(1);
+                break;
+            case 0:
+                //printf("Le fils est créer. \n");
+                sprintf(lecture, "%d", tab[i - 1][0]);
 
-            char decal[5];
-            sprintf(decal, "%d", i);
-            close(tab[i - 1][1]);
-            execl("./processusFils", "processusFils", mot, decal, lecture, NULL);
-        } else {
-            //printf("Les fils est créer et est resté dans le père. \n");
+                char decal[5];
+                sprintf(decal, "%d", i);
+                close(tab[i - 1][1]);
+                execl("./processusFils", "processusFils", mot, decal, lecture, NULL); //Declanche le programme fils
+                break;
+            default:
+                //printf("Les fils est créer et est resté dans le père. \n");
+                break;
         }
     }
 
 
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < size; i++) {
         tabRes[i] = tab[i][1];
     }
     return tabRes;
@@ -126,8 +132,8 @@ int main(int argc, char **argv) {
 
     int statut;
     int decalage;
-    int trouve=0;
-    for (int i = 1; i <= 25; i++) {
+    int trouve = 0;
+    for (int i = 1; i <= size; i++) {
         wait(&statut);
         decalage = WEXITSTATUS(statut);
         if (decalage != 0) {

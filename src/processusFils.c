@@ -9,7 +9,6 @@ int main(int argc, char **argv) {
     //printf("coucou je suis dans le fils \n");
 
     char alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
-
     char cara;
     char message[200];
     char mot[100];
@@ -30,7 +29,6 @@ int main(int argc, char **argv) {
 
         if (message[j] != ' ' && message[j] != '.') {
             mot[m] = message[j];
-
             m++;
         } else {
             mot[m] = '\0';
@@ -54,5 +52,4 @@ int main(int argc, char **argv) {
     } else {
         return 0;
     }
-
 }

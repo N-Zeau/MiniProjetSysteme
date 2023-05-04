@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
     DIR *dir;
     struct dirent *entry;
 
+    //Ouvre le repertoire
     dir = opendir(nomRepertoire);
 
     if (dir == NULL) {
@@ -27,6 +28,8 @@ int main(int argc, char **argv) {
     pid_t res;
     char *fichier;
     int nbFichier = 0;
+
+    //Itération sur tout les repertoires
     while ((entry = readdir(dir)) != NULL) {
         if (entry->d_type == DT_REG) {
             res = fork();
@@ -37,7 +40,7 @@ int main(int argc, char **argv) {
                     printf("(Parcourt) Erreur lors de la création du processus enfant \n");
                     break;
                 case 0:
-                    execl("./main", "main", fichier, mot, NULL);
+                    execl("./main", "main", fichier, mot, NULL); //Déclanche le programme main
                     break;
                 default:
                     break;
@@ -51,9 +54,10 @@ int main(int argc, char **argv) {
 
     int statut;
     int trouve = 0;
+
     for (int i = 0; i < nbFichier; i++) {
         wait(&statut);
-        if (WEXITSTATUS(statut) != 0) {
+        if (WEXITSTATUS(statut) != 0) { //Test si le nom a été trouvé
             trouve = 1;
         }
     }

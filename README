@@ -1,0 +1,19 @@
+                            ----- Présentation du Mini Projet -----
+
+L'objectif de ce projet est de réussir à décrypter afin de trouver le fichier qui nous concerne.
+
+                            ----- Comment exécuter le programme ? -----
+
+Pour cela vous pouvez commencez par ouvrir le terminal et vous localiser dans dans le répertoire "src" du projet.
+Ensuite tapez "make" dans le terminal pour compiler les 3 fichiers concernant le projet.
+Pour exécuter le programme tapez "./parcourt [XXX] [YYY]"
+où [XXX] représente le nom du chemin relatif pour aller parcourir le dossier de votre choix (ici : "ressources/MessagesCodes")
+et [YYY] représente le nom de famille à trouver en MAJUSCULE !
+
+                          ----- Description des fichiers nécessaires -----
+
+Le fichier parcourt.c : Parcours un répertoire et décrypte tout les fichiers de celui-ci
+Le fichier main.c : Créer des processus pour décrypter un fichier
+Le fichier processusFils.c : Décale d'un certain rang un message qui lui est donner pour détecter si le mot chercher est dans le message
+
+                                        ----- FIN ------

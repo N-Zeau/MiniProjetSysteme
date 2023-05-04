@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
             m = -1;
             if (strcmp(mot, argv[1]) == 0) {
                 trouve = 1;
-                printf("----------(enfant) Le mot est trouvé !---------- \n");
+                //printf("----------(enfant) Le mot est trouvé !---------- \n");
             }
             m++;
         }

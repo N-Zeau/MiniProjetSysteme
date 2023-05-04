@@ -67,8 +67,6 @@ void lectureMessage(int file, int *infos, int *ecriture) {
     }
     for (int i = 0; i < 25; i++)
         close(ecriture[i]);
-
-    printf(" \n");
 }
 
 int *decryptage(char *nomFichier, char *mot) {
@@ -128,14 +126,16 @@ int main(int argc, char **argv) {
 
     int statut;
     int decalage;
+    int trouve=0;
     for (int i = 1; i <= 25; i++) {
         wait(&statut);
         decalage = WEXITSTATUS(statut);
         if (decalage != 0) {
             printf("Le nom du fichier est de : %s \n", argv[1]);
             printf("Le decalage est de : %d \n", decalage);
+            trouve = 1;
         }
     }
 
-    return 0;
+    return trouve;
 }

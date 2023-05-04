@@ -1,9 +1,7 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <sys/types.h>
+#include <fcntl.h>
 
 int existenceEtOuverture(char *nom) {
     if (access(nom, F_OK) != 0) {
@@ -55,44 +53,65 @@ int *afficheInformations(int file) {
     return tab;
 }
 
-void lectureMessage(int file, int *infos) {
+void lectureMessage(int file, int *infos, int ecriture) {
     char cara;
     lseek(file, 2 * sizeof(char) + 2 * sizeof(int) + infos[1], SEEK_SET);
     for (int i = 0; i < infos[0]; i++) {
         if (!read(file, &cara, sizeof(char))) {
-            printf("Erreur de la lecture du fichier");
+            printf("Erreur lors de la lecture du fichier \n");
             exit(1);
         } else {
-            printf("%c", cara);
+            write(ecriture,&cara, sizeof(char));
         }
     }
+    close(ecriture);
     printf(" \n");
 }
 
-void decryptage(){
-    int* tab[2];
+int decryptage(char *mot, int decalage) {
+    int ecriture;
+    int tab[2];
+    pid_t res;
 
-    if(pipe(tab)){
-
+    if (pipe(tab) == -1) {
+        printf("Erreur lors de la création du pipe \n");
+        exit(1);
     }
+
+    res = fork();
+    if (res == -1) {
+        printf("Erreur lors de la création du processus enfant \n");
+        exit(1);
+    } else if (res == 0) {
+        printf("Le fils est créer. \n");
+        char lecture[5];
+        sprintf(lecture,"%d",tab[0]);
+        char decal[5];
+        sprintf(decal,"%d",decalage);
+        execl("./processusFils", "processusFils", mot, decal, lecture, NULL);
+    } else {
+        printf("Les fils est créer et est resté dans le père. \n");
+    }
+
+    return ecriture = tab[1];
+
 }
 
 
 int main(int argc, char **argv) {
     int file;
 
-    if(argc != 2)
+    if (argc != 4)
         return -1;
 
     file = existenceEtOuverture(argv[1]);
 
     verifCrypt(file);
     int *infos = afficheInformations(file);
-    lectureMessage(file, infos);
+    int ecriture = decryptage(argv[2], atoi(argv[3]));
+    lectureMessage(file, infos, ecriture);
     free(infos);
-
     close(file);
-
 
     return 0;
 }
